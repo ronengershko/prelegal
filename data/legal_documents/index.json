@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "documents": [
+    {
+      "id": "nda",
+      "name": "Non-Disclosure Agreement",
+      "category": "confidentiality",
+      "description": "A bilateral or unilateral agreement to protect confidential information shared between parties.",
+      "file": "nda.json"
+    },
+    {
+      "id": "service_agreement",
+      "name": "Service Agreement",
+      "category": "contracts",
+      "description": "A contract between a service provider and a client defining the scope, terms, and payment for services rendered.",
+      "file": "service_agreement.json"
+    },
+    {
+      "id": "employment_agreement",
+      "name": "Employment Agreement",
+      "category": "employment",
+      "description": "A contract between an employer and employee outlining the terms and conditions of employment.",
+      "file": "employment_agreement.json"
+    },
+    {
+      "id": "lease_agreement",
+      "name": "Residential Lease Agreement",
+      "category": "real_estate",
+      "description": "A contract between a landlord and tenant defining the terms and conditions for renting residential property.",
+      "file": "lease_agreement.json"
+    },
+    {
+      "id": "terms_of_service",
+      "name": "Terms of Service",
+      "category": "digital",
+      "description": "A legal agreement between a service provider and users governing use of a website, app, or digital service.",
+      "file": "terms_of_service.json"
+    }
+  ],
+  "categories": [
+    { "id": "confidentiality", "label": "Confidentiality" },
+    { "id": "contracts", "label": "Contracts & Agreements" },
+    { "id": "employment", "label": "Employment" },
+    { "id": "real_estate", "label": "Real Estate" },
+    { "id": "digital", "label": "Digital & Online" }
+  ]
+}

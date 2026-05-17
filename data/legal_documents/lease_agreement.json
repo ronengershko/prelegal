@@ -1,0 +1,96 @@
+{
+  "id": "lease_agreement",
+  "name": "Residential Lease Agreement",
+  "type": "lease_agreement",
+  "category": "real_estate",
+  "description": "A contract between a landlord and tenant defining the terms and conditions for renting residential property.",
+  "variables": [
+    { "key": "effective_date", "label": "Effective Date", "type": "date", "required": true },
+    { "key": "landlord_name", "label": "Landlord Name", "type": "text", "required": true },
+    { "key": "landlord_address", "label": "Landlord Address", "type": "text", "required": true },
+    { "key": "tenant_name", "label": "Tenant Name(s)", "type": "text", "required": true },
+    { "key": "property_address", "label": "Property Address", "type": "text", "required": true },
+    { "key": "lease_start_date", "label": "Lease Start Date", "type": "date", "required": true },
+    { "key": "lease_end_date", "label": "Lease End Date", "type": "date", "required": true },
+    { "key": "monthly_rent", "label": "Monthly Rent Amount", "type": "currency", "required": true },
+    { "key": "rent_due_day", "label": "Rent Due Day of Month", "type": "number", "required": true, "default": 1 },
+    { "key": "late_fee_amount", "label": "Late Fee Amount", "type": "currency", "required": true },
+    { "key": "late_fee_grace_days", "label": "Grace Period Before Late Fee (Days)", "type": "number", "required": true, "default": 5 },
+    { "key": "security_deposit", "label": "Security Deposit Amount", "type": "currency", "required": true },
+    { "key": "pets_allowed", "label": "Pets Allowed", "type": "boolean", "required": true, "default": false },
+    { "key": "pet_deposit", "label": "Pet Deposit (if applicable)", "type": "currency", "required": false },
+    { "key": "governing_law_state", "label": "Governing Law (State)", "type": "text", "required": true }
+  ],
+  "sections": [
+    {
+      "id": "parties",
+      "title": "Parties",
+      "content": "This Residential Lease Agreement (\"Agreement\") is entered into as of {{effective_date}} between {{landlord_name}}, located at {{landlord_address}} (\"Landlord\"), and {{tenant_name}} (\"Tenant\")."
+    },
+    {
+      "id": "property",
+      "title": "Property",
+      "content": "Landlord agrees to lease to Tenant the residential property located at {{property_address}} (\"Premises\"), for use as a private residence only."
+    },
+    {
+      "id": "term",
+      "title": "Lease Term",
+      "content": "The lease term shall commence on {{lease_start_date}} and shall expire on {{lease_end_date}} (\"Lease Term\"). This Agreement shall automatically terminate at the end of the Lease Term unless renewed by mutual written agreement of the parties."
+    },
+    {
+      "id": "rent",
+      "title": "Rent",
+      "content": "Tenant agrees to pay Landlord monthly rent of {{monthly_rent}}, due on the {{rent_due_day}}st day of each month. Rent shall be paid by check, bank transfer, or other method agreed upon by the parties. If rent is not received within {{late_fee_grace_days}} days of the due date, Tenant shall pay a late fee of {{late_fee_amount}}."
+    },
+    {
+      "id": "security_deposit",
+      "title": "Security Deposit",
+      "content": "Upon execution of this Agreement, Tenant shall pay Landlord a security deposit of {{security_deposit}}. The security deposit shall be held by Landlord as security for Tenant's faithful performance of this Agreement. Landlord shall return the security deposit to Tenant within the time period required by applicable state law, less any deductions for unpaid rent or damages beyond normal wear and tear."
+    },
+    {
+      "id": "utilities",
+      "title": "Utilities and Services",
+      "content": "Tenant shall be responsible for payment of all utilities and services for the Premises, including but not limited to electricity, gas, water, sewer, trash collection, internet, and cable, unless otherwise agreed in writing."
+    },
+    {
+      "id": "maintenance",
+      "title": "Maintenance and Repairs",
+      "content": "Tenant shall maintain the Premises in a clean and sanitary condition and shall not make any alterations to the Premises without Landlord's prior written consent. Tenant shall promptly notify Landlord of any damage or needed repairs. Landlord shall be responsible for maintaining the structural elements of the Premises and all major appliances provided with the Premises."
+    },
+    {
+      "id": "pets",
+      "title": "Pets",
+      "content": "{{#pets_allowed}}Tenant is permitted to keep pets on the Premises subject to payment of a pet deposit of {{pet_deposit}}. Tenant is responsible for any damage caused by pets and must comply with all local ordinances regarding pets.{{/pets_allowed}}{{^pets_allowed}}No pets or animals of any kind shall be kept on the Premises without Landlord's prior written consent.{{/pets_allowed}}"
+    },
+    {
+      "id": "entry",
+      "title": "Landlord's Right to Enter",
+      "content": "Landlord shall have the right to enter the Premises at reasonable times upon at least twenty-four (24) hours advance notice for the purpose of making inspections, repairs, or showing the Premises to prospective tenants or buyers. In case of emergency, Landlord may enter the Premises without prior notice."
+    },
+    {
+      "id": "subletting",
+      "title": "Subletting and Assignment",
+      "content": "Tenant shall not sublet the Premises or any portion thereof, or assign this Agreement, without Landlord's prior written consent, which shall not be unreasonably withheld."
+    },
+    {
+      "id": "termination",
+      "title": "Termination and Default",
+      "content": "If Tenant fails to pay rent when due or materially breaches any provision of this Agreement, Landlord may terminate this Agreement upon written notice as required by applicable law. Upon termination, Tenant shall vacate the Premises and surrender possession to Landlord. Tenant shall be liable for all unpaid rent through the date of termination and any costs incurred by Landlord to re-let the Premises."
+    },
+    {
+      "id": "governing_law",
+      "title": "Governing Law",
+      "content": "This Agreement shall be governed by and construed in accordance with the laws of the State of {{governing_law_state}}. Any disputes arising under this Agreement shall be resolved in a court of competent jurisdiction in {{governing_law_state}}."
+    },
+    {
+      "id": "entire_agreement",
+      "title": "Entire Agreement",
+      "content": "This Agreement constitutes the entire agreement between the parties with respect to the leasing of the Premises and supersedes all prior agreements and understandings. This Agreement may be modified only by a written instrument signed by both parties."
+    },
+    {
+      "id": "signature",
+      "title": "Signatures",
+      "content": "IN WITNESS WHEREOF, the parties have executed this Residential Lease Agreement as of the date first written above.\n\nLandlord: {{landlord_name}}\nSignature: ___________________________\nDate: ___________________________\n\nTenant: {{tenant_name}}\nSignature: ___________________________\nDate: ___________________________"
+    }
+  ]
+}
