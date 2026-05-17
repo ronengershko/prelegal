@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-100 text-gray-900 antialiased;
+  }
+}
+
+@layer components {
+  /* ── Form primitives ── */
+  .form-label {
+    @apply block text-xs font-semibold text-gray-600 mb-1.5 tracking-wide uppercase;
+  }
+
+  .form-input {
+    @apply w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900
+      shadow-none placeholder-gray-400
+      focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20
+      transition-colors duration-150;
+  }
+
+  .form-textarea {
+    @apply form-input resize-none leading-relaxed;
+  }
+
+  .form-section-title {
+    @apply flex items-center gap-2 text-xs font-bold text-gray-500 mb-3 uppercase tracking-widest;
+  }
+
+  .form-section-title::before {
+    content: "";
+    @apply block w-1 h-4 rounded-full bg-brand-500;
+  }
+
+  /* ── NDA preview document ── */
+  .nda-preview {
+    @apply font-serif text-[13px] leading-relaxed text-gray-800;
+  }
+
+  .nda-preview h1 {
+    @apply text-xl font-bold text-center mb-5 text-gray-900 tracking-tight;
+  }
+
+  .nda-preview h2 {
+    @apply text-sm font-bold mt-6 mb-2 text-gray-900;
+  }
+
+  .nda-preview .section-block {
+    @apply mt-5 mb-1;
+  }
+
+  .nda-preview .section-label {
+    @apply text-[10px] font-bold uppercase tracking-[0.12em] text-gray-400 pb-1 mb-2 border-b border-gray-200 block;
+  }
+
+  .nda-preview p {
+    @apply mb-2 text-gray-700;
+  }
+
+  .nda-preview table {
+    @apply w-full border-collapse mt-4 text-xs;
+  }
+
+  .nda-preview th,
+  .nda-preview td {
+    @apply border border-gray-300 px-3 py-2 text-left align-top;
+  }
+
+  .nda-preview th {
+    @apply bg-gray-50 font-semibold text-gray-700 text-center;
+  }
+
+  .nda-preview td:first-child {
+    @apply bg-gray-50/70 font-semibold text-gray-600 w-28;
+  }
+
+  .nda-preview .signature-row td {
+    @apply h-10;
+  }
+
+  .nda-placeholder {
+    @apply text-brand-500 font-medium;
+  }
+}
+
+/* Spinner animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 0.75s linear infinite;
+}
