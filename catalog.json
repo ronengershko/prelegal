@@ -1,0 +1,66 @@
+{
+  "source": "Common Paper (https://github.com/CommonPaper)",
+  "license": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
+  "documents": [
+    {
+      "name": "Mutual Non-Disclosure Agreement",
+      "description": "A mutual (bilateral) NDA created by a committee of over 40 attorneys. Protects confidential information shared between two parties exploring a potential business relationship.",
+      "filename": "Mutual-NDA.md"
+    },
+    {
+      "name": "Mutual NDA Cover Page",
+      "description": "The cover page for the Common Paper Mutual NDA. Fill in the business terms and sign with your counterparty; it incorporates the standard terms by reference.",
+      "filename": "Mutual-NDA-coverpage.md"
+    },
+    {
+      "name": "Cloud Service Agreement",
+      "description": "A standard agreement for SaaS and cloud software vendors. Covers subscription terms, service levels, data handling, and liability for cloud-based services.",
+      "filename": "CSA.md"
+    },
+    {
+      "name": "Design Partner Agreement",
+      "description": "An agreement for early-stage product partnerships. Allows a vendor to work closely with a design partner to shape product development in exchange for early access and feedback.",
+      "filename": "design-partner-agreement.md"
+    },
+    {
+      "name": "Service Level Agreement",
+      "description": "Defines the uptime, performance commitments, and remedies a cloud service provider makes to its customers, typically used as an addendum to a CSA.",
+      "filename": "sla.md"
+    },
+    {
+      "name": "Professional Services Agreement",
+      "description": "A standard agreement for professional and consulting services engagements. Covers scope of work, deliverables, payment, IP ownership, and confidentiality.",
+      "filename": "psa.md"
+    },
+    {
+      "name": "Data Processing Agreement",
+      "description": "A GDPR-compliant data processing agreement defining the obligations of a data processor on behalf of a data controller. Includes standard contractual clauses and security requirements.",
+      "filename": "DPA.md"
+    },
+    {
+      "name": "Software License Agreement",
+      "description": "A standard agreement for licensing on-premise or downloadable software. Covers license grants, restrictions, support, warranties, and liability.",
+      "filename": "Software-License-Agreement.md"
+    },
+    {
+      "name": "Partnership Agreement",
+      "description": "A standard agreement governing a business partnership between two companies, including referral arrangements, co-sell commitments, and revenue sharing.",
+      "filename": "Partnership-Agreement.md"
+    },
+    {
+      "name": "Pilot Agreement",
+      "description": "A short-term trial or evaluation agreement allowing a prospective customer to test a product or service before committing to a full commercial deal.",
+      "filename": "Pilot-Agreement.md"
+    },
+    {
+      "name": "Business Associate Agreement",
+      "description": "A HIPAA-compliant agreement for vendors who handle protected health information (PHI) on behalf of a covered entity. Required under US healthcare law.",
+      "filename": "BAA.md"
+    },
+    {
+      "name": "AI Addendum",
+      "description": "An addendum covering AI-specific provisions including data usage for model training, AI output disclaimers, and acceptable use restrictions for AI-powered products.",
+      "filename": "AI-Addendum.md"
+    }
+  ]
+}
