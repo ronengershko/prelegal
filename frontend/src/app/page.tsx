@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import NDAForm from "@/components/NDAForm";
-import NDAChat from "@/components/NDAChat";
-import NDAPreview from "@/components/NDAPreview";
-import { NDAFormData, defaultFormData } from "@/lib/ndaGenerator";
+import DocumentSelector from "@/components/DocumentSelector";
+import DocumentChat from "@/components/DocumentChat";
+import DocumentForm from "@/components/DocumentForm";
+import DocumentPreview from "@/components/DocumentPreview";
+import { DOCUMENT_TYPES, defaultFormData, FormData } from "@/lib/documentTypes";
 
 export default function Home() {
   const [user, setUser] = useState<string | null>(null);
@@ -73,18 +74,85 @@ function LoginPage({ onLogin }: { onLogin: (name: string) => void }) {
 }
 
 function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
-  const [formData, setFormData] = useState<NDAFormData>(defaultFormData);
+  const [selectedDocKey, setSelectedDocKey] = useState<string | null>(null);
+  const [formData, setFormData] = useState<FormData>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [mode, setMode] = useState<"chat" | "manual">("chat");
 
+  const config = selectedDocKey ? DOCUMENT_TYPES[selectedDocKey] : null;
+
+  function handleSelectDoc(key: string) {
+    setSelectedDocKey(key);
+    setFormData(defaultFormData(DOCUMENT_TYPES[key]));
+    setMode("chat");
+  }
+
+  function handleDocumentSwitch(key: string) {
+    const newConfig = DOCUMENT_TYPES[key];
+    if (!newConfig) return;
+    setSelectedDocKey(key);
+    setFormData(defaultFormData(newConfig));
+    setMode("chat");
+  }
+
   async function handleDownloadPDF() {
+    if (!config) return;
     setIsGenerating(true);
     try {
-      const { generateAndDownloadPDF } = await import("@/lib/pdfGenerator");
-      await generateAndDownloadPDF(formData);
+      if (selectedDocKey === "mutual-nda" || selectedDocKey === "mutual-nda-coverpage") {
+        const { generateAndDownloadPDF } = await import("@/lib/pdfGenerator");
+        // Adapt Record<string,string> to NDAFormData shape
+        const ndaData = {
+          purpose: formData.purpose ?? "",
+          effectiveDate: formData.effectiveDate ?? "",
+          mndaTermType: (formData.mndaTermType as "expires" | "continues") ?? "expires",
+          mndaTermDuration: formData.mndaTermDuration ?? "",
+          confidentialityTermType: (formData.confidentialityTermType as "fixed" | "perpetual") ?? "fixed",
+          confidentialityDuration: formData.confidentialityDuration ?? "",
+          governingLaw: formData.governingLaw ?? "",
+          jurisdiction: formData.jurisdiction ?? "",
+          modifications: formData.modifications ?? "",
+          party1Company: formData.party1Company ?? "",
+          party1Name: formData.party1Name ?? "",
+          party1Title: formData.party1Title ?? "",
+          party1Address: formData.party1Address ?? "",
+          party2Company: formData.party2Company ?? "",
+          party2Name: formData.party2Name ?? "",
+          party2Title: formData.party2Title ?? "",
+          party2Address: formData.party2Address ?? "",
+        };
+        await generateAndDownloadPDF(ndaData);
+      } else {
+        const { generateDocumentPDF } = await import("@/lib/pdfGenerator");
+        await generateDocumentPDF(config, formData);
+      }
     } finally {
       setIsGenerating(false);
     }
+  }
+
+  if (!config) {
+    return (
+      <div className="min-h-screen flex flex-col bg-slate-100">
+        <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-10">
+          <div className="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 border border-brand-100">
+                <ScalesIcon className="h-5 w-5 text-brand-500" />
+              </div>
+              <span className="text-base font-bold text-navy tracking-tight">PreLegal</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="hidden sm:block text-sm text-gray-500">{user}</span>
+              <button onClick={onSignOut} className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+                Sign out
+              </button>
+            </div>
+          </div>
+        </header>
+        <DocumentSelector onSelect={handleSelectDoc} />
+      </div>
+    );
   }
 
   return (
@@ -97,19 +165,27 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
               <ScalesIcon className="h-5 w-5 text-brand-500" />
             </div>
             <div>
-              <span className="text-base font-bold text-navy tracking-tight">PreLegal</span>
+              <button
+                onClick={() => setSelectedDocKey(null)}
+                className="text-base font-bold text-navy tracking-tight hover:text-brand-600 transition-colors"
+              >
+                PreLegal
+              </button>
               <span className="hidden sm:inline ml-2 text-sm text-gray-400 font-medium">
-                Mutual NDA Creator
+                {config.name}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="hidden sm:block text-sm text-gray-500">{user}</span>
             <button
-              onClick={onSignOut}
-              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              onClick={() => setSelectedDocKey(null)}
+              className="hidden sm:inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
             >
+              ← All documents
+            </button>
+            <span className="hidden sm:block text-sm text-gray-500">{user}</span>
+            <button onClick={onSignOut} className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
               Sign out
             </button>
             <button
@@ -159,9 +235,7 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
                 <button
                   onClick={() => setMode("chat")}
                   className={`px-3 py-1.5 transition-colors ${
-                    mode === "chat"
-                      ? "bg-brand-500 text-white"
-                      : "bg-white text-gray-400 hover:text-gray-600"
+                    mode === "chat" ? "bg-brand-500 text-white" : "bg-white text-gray-400 hover:text-gray-600"
                   }`}
                 >
                   AI Chat
@@ -169,9 +243,7 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
                 <button
                   onClick={() => setMode("manual")}
                   className={`px-3 py-1.5 transition-colors border-l border-gray-200 ${
-                    mode === "manual"
-                      ? "bg-brand-500 text-white"
-                      : "bg-white text-gray-400 hover:text-gray-600"
+                    mode === "manual" ? "bg-brand-500 text-white" : "bg-white text-gray-400 hover:text-gray-600"
                   }`}
                 >
                   Manual
@@ -180,15 +252,15 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
             </div>
 
             <div className={mode === "chat" ? "flex flex-col flex-1 min-h-0" : "hidden"}>
-              <NDAChat
+              <DocumentChat
                 formData={formData}
-                onFieldsUpdate={(updates) =>
-                  setFormData((prev) => ({ ...prev, ...updates }))
-                }
+                documentType={selectedDocKey!}
+                onFieldsUpdate={(updates) => setFormData((prev) => ({ ...prev, ...updates }))}
+                onDocumentSwitch={handleDocumentSwitch}
               />
             </div>
             <div className={mode === "manual" ? "flex-1 overflow-y-auto px-6 py-5" : "hidden"}>
-              <NDAForm data={formData} onChange={setFormData} />
+              <DocumentForm config={config} data={formData} onChange={setFormData} />
             </div>
           </div>
 
@@ -201,19 +273,16 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
                 Live
               </span>
             </div>
-
-            {/* Paper */}
             <div className="rounded-2xl border border-gray-200 shadow-sm overflow-hidden bg-slate-200/60 p-4">
               <div
                 className="bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08),0_0_1px_rgba(0,0,0,0.06)] rounded-sm mx-auto overflow-auto"
                 style={{ maxHeight: "calc(100vh - 13rem)" }}
               >
                 <div className="px-10 py-10">
-                  <NDAPreview data={formData} />
+                  <DocumentPreview config={config} data={formData} />
                 </div>
               </div>
             </div>
-
             <p className="text-center text-xs text-gray-400">
               <span className="text-blue-400 font-medium">Blue text</span> = unfilled fields
             </p>
@@ -225,14 +294,14 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
       {/* ── Footer ── */}
       <footer className="border-t border-gray-200 bg-white py-4 mt-4">
         <p className="text-center text-xs text-gray-400">
-          Based on{" "}
+          Legal templates based on{" "}
           <a
-            href="https://commonpaper.com/standards/mutual-nda/1.0"
+            href="https://commonpaper.com"
             className="underline hover:text-gray-600 transition-colors"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Common Paper Mutual NDA v1.0
+            Common Paper
           </a>{" "}
           —{" "}
           <a

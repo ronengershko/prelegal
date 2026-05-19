@@ -41,6 +41,7 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: list[ChatMessage]
     current_fields: dict
+    document_type: str = "mutual-nda"
 
 
 @app.get("/api/health")
@@ -60,6 +61,7 @@ def chat(req: ChatRequest):
         result = get_ai_response(
             [m.model_dump() for m in req.messages],
             req.current_fields,
+            req.document_type,
         )
         return result
     except Exception:
