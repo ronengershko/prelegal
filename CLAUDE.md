@@ -8,7 +8,7 @@ The available documents are covered in the catalog.json file in the project root
 
 @catalog.json
 
-The current implementation supports all 11 document types via AI chat with full user authentication and document persistence.
+The current implementation supports all 12 document types via AI chat with full user authentication and document persistence.
 
 ## Development process
 
@@ -68,5 +68,15 @@ Backend available at http://localhost:8000
 - **Frontend**: `frontend/src/components/NDAChat.tsx` — chat UI with scrollable message list and text input. Fires an empty-history request on mount to get the AI's opening message. Each user message appends to history, calls `/api/chat`, merges non-null field updates into parent `formData` via `onFieldsUpdate`. Error state shows a Retry button that replays the last call using current `messages` state.
 - **Toggle**: `page.tsx` has `mode: "chat" | "manual"` state. Left panel header shows an AI Chat / Manual pill toggle. Both `NDAChat` and `NDAForm` are always mounted; CSS `hidden` class toggles visibility so chat history is preserved when switching to Manual and back.
 - **`NDAForm` unchanged** — switching to Manual shows the AI-populated fields fully editable.
+
+### PL-6: Expand to All 12 Document Types
+- **Document selector**: After login, `page.tsx` shows a 12-card grid (`DocumentSelector.tsx`). Selecting a card sets `selectedDocKey` state and initialises `formData` from the document's config defaults.
+- **Document registry** (`backend/documents.py`): All 12 document types registered with per-document system prompts and ordered field lists. Keys: `mutual-nda`, `mutual-nda-coverpage`, `csa`, `design-partner`, `sla`, `psa`, `dpa`, `software-license`, `partnership`, `pilot`, `baa`, `ai-addendum`.
+- **Generic ChatTurn** (`backend/chat.py`): Replaced NDA-specific `NDAFields` with `field_updates: list[FieldUpdate]` (key/value pairs) and `switch_to: Optional[str]`. `POST /api/chat` now accepts `document_type: str` and dispatches to the correct system prompt.
+- **Document type switching**: If the user asks to switch to a different document mid-chat, the AI sets `switch_to` in its response. The frontend resets `formData`, `selectedDocKey`, and `mode` to `"chat"` accordingly. The AI also explains and suggests alternatives for any document type outside the supported 12.
+- **TypeScript config** (`frontend/src/lib/documentTypes.ts`): `DocumentTypeConfig` defines per-document sections, field schemas (key, label, placeholder, type, choices, dependsOn), `party1Fields`/`party2Fields` signatory key mappings, and signature block config. All form data is `Record<string, string>`.
+- **Generic components**: `DocumentChat.tsx` (replaces `NDAChat`), `DocumentForm.tsx` (config-driven dynamic form with radio/text/textarea/date fields and conditional field visibility), `DocumentPreview.tsx` (config-driven rich preview with populated signature block using correct party field keys per document).
+- **PDF for all docs** (`pdfGenerator.ts`): `generateDocumentPDF(config, data)` renders title, intro, labelled sections, and a populated signature table using `party1Fields`/`party2Fields` key mappings. NDA still uses the original `generateAndDownloadPDF` for its custom section layout.
+- **Tests**: `backend/test_documents.py` and `backend/test_api.py` — 23 unit and integration tests covering the document registry, `ChatTurn` model, and all API paths.
 
 
