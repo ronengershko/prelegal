@@ -1,11 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NDAForm from "@/components/NDAForm";
 import NDAPreview from "@/components/NDAPreview";
 import { NDAFormData, defaultFormData } from "@/lib/ndaGenerator";
 
 export default function Home() {
+  const [user, setUser] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setUser(localStorage.getItem("prelegal_user"));
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  if (!user) {
+    return <LoginPage onLogin={(name) => {
+      localStorage.setItem("prelegal_user", name);
+      setUser(name);
+    }} />;
+  }
+
+  return <App user={user} onSignOut={() => {
+    localStorage.removeItem("prelegal_user");
+    setUser(null);
+  }} />;
+}
+
+function LoginPage({ onLogin }: { onLogin: (name: string) => void }) {
+  const [name, setName] = useState("");
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (trimmed) onLogin(trimmed);
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-100">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-10 w-full max-w-sm">
+        <div className="flex justify-center mb-6">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 border border-brand-100">
+            <ScalesIcon className="h-6 w-6 text-brand-500" />
+          </div>
+        </div>
+        <h1 className="text-2xl font-bold text-center text-navy mb-1">PreLegal</h1>
+        <p className="text-center text-sm text-gray-400 mb-8">Enter your name to continue</p>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            className="form-input"
+            placeholder="Your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoFocus
+          />
+          <button
+            type="submit"
+            disabled={!name.trim()}
+            className="w-full rounded-lg bg-purple px-4 py-2.5 text-sm font-semibold text-white
+              hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-purple/50
+              disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+          >
+            Enter
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
   const [formData, setFormData] = useState<NDAFormData>(defaultFormData);
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -26,23 +92,33 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 border border-brand-100">
-              <ScalesIcon className="h-5 w-5 text-brand-600" />
+              <ScalesIcon className="h-5 w-5 text-brand-500" />
             </div>
             <div>
-              <span className="text-base font-bold text-brand-600 tracking-tight">PreLegal</span>
+              <span className="text-base font-bold text-navy tracking-tight">PreLegal</span>
               <span className="hidden sm:inline ml-2 text-sm text-gray-400 font-medium">
                 Mutual NDA Creator
               </span>
             </div>
           </div>
 
-          <button
-            onClick={handleDownloadPDF}
-            disabled={isGenerating}
-            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm
-              hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
-              disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
-          >
+          <div className="flex items-center gap-3">
+            <span className="hidden sm:block text-sm text-gray-500">
+              {user}
+            </span>
+            <button
+              onClick={onSignOut}
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Sign out
+            </button>
+            <button
+              onClick={handleDownloadPDF}
+              disabled={isGenerating}
+              className="inline-flex items-center gap-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm
+                hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
+                disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
+            >
             {isGenerating ? (
               <>
                 <SpinnerIcon className="h-4 w-4 animate-spin" />
@@ -55,6 +131,7 @@ export default function Home() {
               </>
             )}
           </button>
+          </div>
         </div>
       </header>
 
