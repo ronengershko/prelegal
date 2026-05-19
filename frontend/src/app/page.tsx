@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import NDAForm from "@/components/NDAForm";
+import NDAChat from "@/components/NDAChat";
 import NDAPreview from "@/components/NDAPreview";
 import { NDAFormData, defaultFormData } from "@/lib/ndaGenerator";
 
@@ -74,6 +75,7 @@ function LoginPage({ onLogin }: { onLogin: (name: string) => void }) {
 function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
   const [formData, setFormData] = useState<NDAFormData>(defaultFormData);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [mode, setMode] = useState<"chat" | "manual">("chat");
 
   async function handleDownloadPDF() {
     setIsGenerating(true);
@@ -103,9 +105,7 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="hidden sm:block text-sm text-gray-500">
-              {user}
-            </span>
+            <span className="hidden sm:block text-sm text-gray-500">{user}</span>
             <button
               onClick={onSignOut}
               className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
@@ -119,18 +119,18 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
                 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2
                 disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
             >
-            {isGenerating ? (
-              <>
-                <SpinnerIcon className="h-4 w-4 animate-spin" />
-                Generating…
-              </>
-            ) : (
-              <>
-                <DownloadIcon className="h-4 w-4" />
-                Download PDF
-              </>
-            )}
-          </button>
+              {isGenerating ? (
+                <>
+                  <SpinnerIcon className="h-4 w-4 animate-spin" />
+                  Generating…
+                </>
+              ) : (
+                <>
+                  <DownloadIcon className="h-4 w-4" />
+                  Download PDF
+                </>
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -139,17 +139,55 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
       <main className="flex-1 max-w-screen-xl mx-auto w-full px-4 sm:px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
 
-          {/* Form panel */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/60">
-              <h2 className="text-sm font-semibold text-gray-800 tracking-tight">
-                Agreement Details
-              </h2>
-              <p className="text-xs text-gray-400 mt-0.5">
-                Fill in the fields — the document updates in real time.
-              </p>
+          {/* Left panel — chat or form */}
+          <div
+            className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col sticky top-[4.5rem]"
+            style={{ height: "calc(100vh - 7rem)" }}
+          >
+            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/60 flex items-center justify-between flex-none">
+              <div>
+                <h2 className="text-sm font-semibold text-gray-800 tracking-tight">
+                  {mode === "chat" ? "AI Assistant" : "Agreement Details"}
+                </h2>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {mode === "chat"
+                    ? "Chat to fill in your document."
+                    : "Fill in the fields — the document updates in real time."}
+                </p>
+              </div>
+              <div className="flex rounded-lg border border-gray-200 overflow-hidden text-xs font-semibold">
+                <button
+                  onClick={() => setMode("chat")}
+                  className={`px-3 py-1.5 transition-colors ${
+                    mode === "chat"
+                      ? "bg-brand-500 text-white"
+                      : "bg-white text-gray-400 hover:text-gray-600"
+                  }`}
+                >
+                  AI Chat
+                </button>
+                <button
+                  onClick={() => setMode("manual")}
+                  className={`px-3 py-1.5 transition-colors border-l border-gray-200 ${
+                    mode === "manual"
+                      ? "bg-brand-500 text-white"
+                      : "bg-white text-gray-400 hover:text-gray-600"
+                  }`}
+                >
+                  Manual
+                </button>
+              </div>
             </div>
-            <div className="px-6 py-5">
+
+            <div className={mode === "chat" ? "flex flex-col flex-1 min-h-0" : "hidden"}>
+              <NDAChat
+                formData={formData}
+                onFieldsUpdate={(updates) =>
+                  setFormData((prev) => ({ ...prev, ...updates }))
+                }
+              />
+            </div>
+            <div className={mode === "manual" ? "flex-1 overflow-y-auto px-6 py-5" : "hidden"}>
               <NDAForm data={formData} onChange={setFormData} />
             </div>
           </div>
@@ -213,29 +251,15 @@ function App({ user, onSignOut }: { user: string; onSignOut: () => void }) {
 
 function ScalesIcon({ className }: { className?: string }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-    >
-      <path
-        fillRule="evenodd"
-        d="M12 3a1 1 0 0 1 .961.726l1.78 6.322H19.5a1 1 0 0 1 0 2h-.96l1.574 4.723A1 1 0 0 1 19.17 18H14.83a1 1 0 0 1-.944-1.329L15.46 12H12.78l-1.78 6.322A1 1 0 0 1 10 19H4.83a1 1 0 0 1-.944-1.329L5.46 13H4.5a1 1 0 0 1 0-2h5.759l1.78-6.274A1 1 0 0 1 12 3Z"
-        clipRule="evenodd"
-      />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path fillRule="evenodd" d="M12 3a1 1 0 0 1 .961.726l1.78 6.322H19.5a1 1 0 0 1 0 2h-.96l1.574 4.723A1 1 0 0 1 19.17 18H14.83a1 1 0 0 1-.944-1.329L15.46 12H12.78l-1.78 6.322A1 1 0 0 1 10 19H4.83a1 1 0 0 1-.944-1.329L5.46 13H4.5a1 1 0 0 1 0-2h5.759l1.78-6.274A1 1 0 0 1 12 3Z" clipRule="evenodd" />
     </svg>
   );
 }
 
 function DownloadIcon({ className }: { className?: string }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      className={className}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className}>
       <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
       <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
     </svg>
@@ -244,25 +268,9 @@ function DownloadIcon({ className }: { className?: string }) {
 
 function SpinnerIcon({ className }: { className?: string }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      className={className}
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z"
-      />
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className={className}>
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
   );
 }
