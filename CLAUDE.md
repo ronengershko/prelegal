@@ -79,4 +79,15 @@ Backend available at http://localhost:8000
 - **PDF for all docs** (`pdfGenerator.ts`): `generateDocumentPDF(config, data)` renders title, intro, labelled sections, and a populated signature table using `party1Fields`/`party2Fields` key mappings. NDA still uses the original `generateAndDownloadPDF` for its custom section layout.
 - **Tests**: `backend/test_documents.py` and `backend/test_api.py` — 23 unit and integration tests covering the document registry, `ChatTurn` model, and all API paths.
 
+### PL-7: Multi-user Auth and Document Persistence
+- **Auth** (`backend/auth.py`): JWT (7-day expiry, HS256) + bcrypt password hashing via the `bcrypt` library directly (passlib dropped due to bcrypt≥4 incompatibility). `create_token` / `decode_token` / `hash_password` / `verify_password` helpers.
+- **Database** (`backend/database.py`): `users` table (id, name, email UNIQUE, password_hash) and `documents` table (id, user_id FK, document_type, title, form_data JSON, created_at, updated_at). Full CRUD: `create_user`, `get_user_by_email`, `save_document`, `update_document`, `get_user_documents`, `get_document`, `delete_document`.
+- **Auth endpoints** (`backend/main.py`): `POST /api/register` (name + email + password → JWT) and `POST /api/login` (email + password → JWT). `current_user` FastAPI dependency via `HTTPBearer` validates the token on all protected routes.
+- **Document endpoints**: `GET /api/documents`, `POST /api/documents`, `PUT /api/documents/{id}`, `DELETE /api/documents/{id}` — all protected with JWT. Cross-user access returns 404.
+- **Frontend auth** (`page.tsx`): Replaced fake name-only login with `AuthPage` component — Sign In / Register tab switcher. JWT stored as `prelegal_token` in localStorage; user name as `prelegal_user`. Auth headers passed to all document API calls.
+- **Save button**: Header shows a Save button (floppy-disk icon). First save POSTs; subsequent saves PUT to the same `savedDocId`. Button briefly shows "Saved" on success.
+- **My Documents panel**: Slide-in drawer from the right listing all saved documents (title, doc type, last-updated date). Clicking a document loads it in manual mode; trash icon deletes it.
+- **No emojis**: Removed all emoji from `DocumentSelector.tsx`.
+- **Draft disclaimer**: Amber banner at the bottom of every `DocumentPreview` — "Draft document — not legal advice."
+- **Tests**: `backend/test_auth_documents.py` — 16 integration tests covering register, login, and document CRUD including cross-user isolation.
 

@@ -118,6 +118,14 @@ export default function DocumentPreview({ config, data }: Props) {
 
       {config.hasSignatureBlock && <SignatureBlock config={config} data={data} />}
 
+      <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
+        <p className="text-[11px] text-amber-800 leading-relaxed">
+          <strong>Draft document — not legal advice.</strong> This document is an AI-assisted draft
+          for informational purposes only. It is not a substitute for advice from a qualified attorney.
+          Please have a licensed lawyer review it before use.
+        </p>
+      </div>
+
       {config.sourceUrl && (
         <p className="mt-5 text-[11px] text-gray-400">
           Based on{" "}
