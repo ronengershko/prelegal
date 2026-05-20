@@ -91,3 +91,15 @@ Backend available at http://localhost:8000
 - **Draft disclaimer**: Amber banner at the bottom of every `DocumentPreview` — "Draft document — not legal advice."
 - **Tests**: `backend/test_auth_documents.py` — 16 integration tests covering register, login, and document CRUD including cross-user isolation.
 
+### PL-8: Final Polish + AI Conversation Bug Fix
+- **AI bug fix** (`backend/documents.py`): Root cause was `_BASE_RULES` not requiring the model to follow up after acknowledging. Added two rules: always ask the next missing field in the same reply; never send an acknowledgement-only message unless all fields are complete.
+- **Auto-save** (`page.tsx`): 2s debounced save on any `formData` change. Uses the same POST/PUT logic as the manual Save button. Only triggers when at least one field has content. Save button kept.
+- **Unified header**: eliminated the copy-pasted duplicate header into a single conditional render.
+- **Save button**: `bg-navy text-white` when unsaved → `bg-emerald-500` + CheckIcon when saved.
+- **Auth page**: SpinnerIcon on submit loading, tagline added, reserved error slot to prevent layout shift.
+- **My Documents panel**: slide-in + fade-in CSS animations (`globals.css` keyframes), SVG XIcon close button, spinner loading state, icon + copy empty state, fixed too-light date text.
+- **Document selector**: equal card heights via `auto-rows-fr` + `flex-1` on description.
+- **Chat bubbles**: AI messages use `bg-brand-50` tint; input placeholder changes to "AI is thinking…" while loading.
+- **globals.css**: removed duplicate hand-rolled `animate-spin`; added `slideInFromRight` / `fadeIn` keyframes; section labels bumped from `text-[10px]` to `text-xs`.
+- **tailwind.config**: added `brand-400` shade so `hover:border-brand-400` resolves correctly.
+
