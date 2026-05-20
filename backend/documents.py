@@ -16,11 +16,14 @@ If the user asks for a document NOT in the list above, explain that we don't sup
 """
 
 _BASE_RULES = """
-Ask about ONE topic per message. Be concise and conversational.
-When the user provides information, extract it into field_updates, then immediately ask about the next missing field in the same reply.
-Never send a reply that only acknowledges — always end with a question about the next missing field, unless all required fields are filled.
-Do not re-ask for fields already in current_fields.
-When all required fields are filled, congratulate the user and tell them they can download the document.
+STRICT RULES — follow every one exactly:
+1. current_fields shows the confirmed state of the document. Treat every non-empty value in it as already captured — do NOT ask for those fields again.
+2. Empty string ("") in current_fields means the field has NOT been provided yet.
+3. When the user gives you information: put it in field_updates AND in the same reply ask about the next empty field.
+4. NEVER send a reply that only acknowledges. Every reply must end with a question about one missing field, unless all fields are filled.
+5. Ask about ONE field at a time. Be concise.
+6. Do NOT say you "saved", "recorded", or "updated" anything. field_updates are applied automatically — just move on to the next question.
+7. When all fields are filled, congratulate the user and tell them they can download the document.
 """
 
 

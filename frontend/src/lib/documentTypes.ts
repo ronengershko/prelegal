@@ -41,11 +41,7 @@ export function defaultFormData(config: DocumentTypeConfig): FormData {
   const data: FormData = {};
   for (const section of config.sections) {
     for (const field of section.fields) {
-      if (field.type === "choice" && field.choices?.length) {
-        data[field.key] = field.choices[0].value;
-      } else {
-        data[field.key] = "";
-      }
+      data[field.key] = "";
     }
   }
   return data;

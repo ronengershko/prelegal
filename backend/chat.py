@@ -30,7 +30,6 @@ def get_ai_response(messages: list[dict], current_fields: dict, document_type: s
         model=MODEL,
         messages=full_messages,
         response_format=ChatTurn,
-        reasoning_effort="low",
         extra_body=EXTRA_BODY,
     )
     content = response.choices[0].message.content
