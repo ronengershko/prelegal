@@ -19,19 +19,19 @@ export default function DocumentSelector({ onSelect }: Props) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
           {docs.map((doc) => (
             <button
               key={doc.key}
               onClick={() => onSelect(doc.key)}
-              className="group text-left bg-white rounded-2xl border border-gray-200 shadow-sm p-5
+              className="group text-left bg-white rounded-2xl border border-gray-200 shadow-sm p-5 h-full flex flex-col
                 hover:border-brand-400 hover:shadow-md hover:-translate-y-0.5 transition-all duration-150
                 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
             >
               <h3 className="text-sm font-semibold text-navy group-hover:text-brand-600 transition-colors leading-snug">
                 {doc.name}
               </h3>
-              <p className="mt-1 text-xs text-gray-500 leading-relaxed line-clamp-3">
+              <p className="mt-1.5 text-xs text-gray-500 leading-relaxed flex-1">
                 {doc.description}
               </p>
             </button>
