@@ -86,7 +86,7 @@ export default function DocumentChat({ formData, documentType, onFieldsUpdate, o
               className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
                 m.role === "user"
                   ? "bg-brand-500 text-white rounded-br-sm"
-                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
+                  : "bg-brand-50 text-gray-800 border border-brand-100 rounded-bl-sm"
               }`}
             >
               {m.content}
@@ -125,8 +125,8 @@ export default function DocumentChat({ formData, documentType, onFieldsUpdate, o
 
       <div className="px-4 pb-4 pt-2 border-t border-gray-100 flex gap-2">
         <input
-          className="form-input flex-1"
-          placeholder="Type your reply…"
+          className="form-input flex-1 disabled:bg-gray-50 disabled:cursor-not-allowed disabled:text-gray-400"
+          placeholder={loading ? "AI is thinking…" : "Type your reply…"}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {

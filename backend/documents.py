@@ -17,7 +17,8 @@ If the user asks for a document NOT in the list above, explain that we don't sup
 
 _BASE_RULES = """
 Ask about ONE topic per message. Be concise and conversational.
-When the user provides information, extract it into field_updates.
+When the user provides information, extract it into field_updates, then immediately ask about the next missing field in the same reply.
+Never send a reply that only acknowledges — always end with a question about the next missing field, unless all required fields are filled.
 Do not re-ask for fields already in current_fields.
 When all required fields are filled, congratulate the user and tell them they can download the document.
 """
